@@ -8,26 +8,25 @@
 import SwiftUI
 
 struct CardView: View {
-    
     @State var animateBonusTimeRemaining: Double = 0
     
     private let card: EmojiMemoryGame.Card
-
+    
     init(_ Card: EmojiMemoryGame.Card) {
-        card  =  Card
+        card = Card
     }
     
     let color = EmojiMemoryGame().ModeColor
     
-    private struct DrawingConstants {
+    private enum DrawingConstants {
         static let cornerRadius: CGFloat = 17
         static let lineWidth: CGFloat = 3
         static let fontScale: CGFloat = 0.65
-        static let matchColor: Color  = .accentColor
+        static let matchColor: Color = .accentColor
         static let fontSize: CGFloat = 32
     }
     
-    private func font (in size: CGSize) -> Font {
+    private func font(in size: CGSize) -> Font {
         Font.system(size: min(size.width, size.height) * DrawingConstants.fontScale)
     }
     
@@ -37,8 +36,8 @@ struct CardView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack{
-                Group{
+            ZStack {
+                Group {
                     if card.isConsumingBonusTime {
                         Pie(startAngle: Angle(degrees: 0 - 90), endAngle: Angle(degrees: (1 - animateBonusTimeRemaining) * 360 - 90))
                             .onAppear {
@@ -60,7 +59,7 @@ struct CardView: View {
                     .animation(
                         card.isMatch
                             ? .linear(duration: 2).repeatForever(autoreverses: false)
-                        : .none)
+                            : .none)
                     .font(Font.system(size: DrawingConstants.fontSize))
                     .scaleEffect(scale(thatFits: geometry.size))
             }

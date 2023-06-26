@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiable{
-    var items:  [Item]
+struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiable {
+    var items: [Item]
     var aspectRatio: CGFloat
     var content: (Item) -> ItemView
     
@@ -19,9 +19,9 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
     }
     
     var body: some View {
-        GeometryReader{ geometry in
+        GeometryReader { geometry in
             VStack {
-                let width: CGFloat = widthThatFits(itemCount: items.count, in: geometry.size, itemAspectio: 2/3)
+                let width: CGFloat = widthThatFits(itemCount: items.count, in: geometry.size, itemAspectio: 2 / 3)
                 LazyVGrid(columns: [adaptiveGridItem(width: width)], spacing: 0) {
                     ForEach(items) { item in
                         content(item).aspectRatio(aspectRatio, contentMode: .fit)
@@ -32,14 +32,14 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
         }
     }
     
-    //let the GridItem's spacing = 0 and then return the GridItem to the LazyVGrid
+    // let the GridItem's spacing = 0 and then return the GridItem to the LazyVGrid
     private func adaptiveGridItem(width: CGFloat) -> GridItem {
         var griditem = GridItem(.adaptive(minimum: width))
         griditem.spacing = 0
         return griditem
     }
     
-    //calculate the width which can fix the whole screen
+    // calculate the width which can fix the whole screen
     private func widthThatFits(itemCount: Int, in size: CGSize, itemAspectio: CGFloat) -> CGFloat {
         var columnCount = 1
         var rowCount = itemCount
@@ -62,8 +62,8 @@ struct AspectVGrid<Item, ItemView>: View where ItemView: View, Item: Identifiabl
     }
 }
 
-//struct AspectVGrid_Previews: PreviewProvider {
+// struct AspectVGrid_Previews: PreviewProvider {
 //    static var previews: some View {
 //        AspectVGrid()
 //    }
-//}
+// }

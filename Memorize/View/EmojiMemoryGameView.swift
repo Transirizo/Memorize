@@ -8,38 +8,39 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-    @ObservedObject var game:  EmojiMemoryGame
+    @ObservedObject var game: EmojiMemoryGame
     @Namespace private var dealNamespace
     @State private var dealt = Set<Int>()
-
     
-    private struct DrawingConstants {
+    private enum DrawingConstants {
         static let defalutColor: Color = .blue
     }
     
-    private func deal(_ card: EmojiMemoryGame.Card){
+    private func deal(_ card: EmojiMemoryGame.Card) {
         dealt.insert(card.id)
     }
     
-    private func isUndealt(_ card: EmojiMemoryGame.Card) -> Bool{
+    private func isUndealt(_ card: EmojiMemoryGame.Card) -> Bool {
         !dealt.contains(card.id)
     }
+
     private func dealingAnimation(for card: EmojiMemoryGame.Card) -> Animation {
         var delay = 0.0
-        if let index = game.cards.firstIndex(where: { $0.id == card.id}){
+        if let index = game.cards.firstIndex(where: { $0.id == card.id }) {
             delay = Double(index) * (CardConstants.totalDuration / Double(game.cards.count))
         }
         return Animation.easeInOut(duration: CardConstants.dealDuration).delay(delay)
     }
-    private func zIndex(of card: EmojiMemoryGame.Card) -> Double{
-        -Double(game.cards.firstIndex(where: {$0.id == card.id}) ?? 0)
+
+    private func zIndex(of card: EmojiMemoryGame.Card) -> Double {
+        -Double(game.cards.firstIndex(where: { $0.id == card.id }) ?? 0)
     }
     
     @ViewBuilder
-    private func dealCard(_ card: EmojiMemoryGame.Card) -> some View{
-        if(isUndealt(card)){
+    private func dealCard(_ card: EmojiMemoryGame.Card) -> some View {
+        if isUndealt(card) {
             Color.clear
-        }else{
+        } else {
             cardView(for: card)
         }
     }
@@ -52,14 +53,14 @@ struct EmojiMemoryGameView: View {
             .transition(.asymmetric(insertion: .identity, removal: .scale))
             .zIndex(zIndex(of: card))
             .onTapGesture {
-                withAnimation{
+                withAnimation {
                     game.choose(card)
                 }
             }
     }
     
     var deckBody: some View {
-        ZStack{
+        ZStack {
             ForEach(game.cards.filter(isUndealt)) { card in
                 CardView(card)
                     .matchedGeometryEffect(id: card.id, in: dealNamespace)
@@ -68,17 +69,17 @@ struct EmojiMemoryGameView: View {
         }
         .frame(width: CardConstants.undealWidth, height: CardConstants.undealHeight)
         .foregroundColor(game.color)
-        .onTapGesture{
+        .onTapGesture {
             for card in game.cards {
-                withAnimation(dealingAnimation(for: card)){
+                withAnimation(dealingAnimation(for: card)) {
                     deal(card)
                 }
             }
         }
     }
     
-    private struct CardConstants {
-        static let aspectRatio: CGFloat = 2/3
+    private enum CardConstants {
+        static let aspectRatio: CGFloat = 2 / 3
         static let dealDuration: Double = 0.5
         static let totalDuration: Double = 2
         static let undealHeight: CGFloat = 90
@@ -89,7 +90,7 @@ struct EmojiMemoryGameView: View {
         //      ScrollView{
         //        LazyVGrid(columns: [GridItem(.adaptive(minimum: 70, maximum: 200))]) {
         //          ForEach(game.cards) {  card in
-        AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
+        AspectVGrid(items: game.cards, aspectRatio: 2 / 3) { card in
             dealCard(card)
         }
         //          }
@@ -99,8 +100,8 @@ struct EmojiMemoryGameView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .bottom){
-            VStack{
+        ZStack(alignment: .bottom) {
+            VStack {
                 Text("Theme: \(game.theme)")
                     .font(.largeTitle)
                     .foregroundColor(game.color)
@@ -110,7 +111,7 @@ struct EmojiMemoryGameView: View {
                     .foregroundColor(DrawingConstants.defalutColor)
                 gameBody
                 Spacer()
-                HStack(alignment: .center){
+                HStack(alignment: .center) {
                     Spacer()
                     Newgame
                     //                VehiclesTheme
@@ -124,17 +125,16 @@ struct EmojiMemoryGameView: View {
             .padding(.horizontal)
             deckBody
         }
-        
     }
     
     var Newgame: some View {
         Button {
-            withAnimation{
+            withAnimation {
                 game.newgame()
                 dealt = []
             }
         } label: {
-            VStack{
+            VStack {
                 Image(systemName: "gamecontroller")
                     .padding(.horizontal)
                 Text("NewGame")
@@ -181,7 +181,7 @@ struct EmojiMemoryGameView: View {
     //        }
     //    }
     
-    //append some view
+    // append some view
     //    var append: some View {
     //        Button {
     //            if emojisCount < emojis.count{
@@ -199,13 +199,12 @@ struct EmojiMemoryGameView: View {
     //            }
     //        } label: {Image(systemName: "minus.diamond")}
     //    }
-    
 }
 
-//combine View to preview
+// combine View to preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-            let game = EmojiMemoryGame()
-            return EmojiMemoryGameView(game: game)
+        let game = EmojiMemoryGame()
+        return EmojiMemoryGameView(game: game)
     }
 }

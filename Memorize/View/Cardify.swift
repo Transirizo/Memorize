@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct Cardify: AnimatableModifier {
-    
     var color: Color
     var isMatch: Bool
     var rotation: Double
     
     var animatableData: Double {
-        set{ rotation = newValue }
-        get{ rotation }
+        set { rotation = newValue }
+        get { rotation }
     }
     
     init(Color: Color, isFaceUp: Bool, IsMatch: Bool) {
@@ -25,16 +24,16 @@ struct Cardify: AnimatableModifier {
     }
     
     func body(content: Content) -> some View {
-        ZStack{
+        ZStack {
             let shape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
-            if rotation  < 90  {
+            if rotation < 90 {
                 shape.fill().foregroundColor(color)
                 shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
-                if isMatch{
+                if isMatch {
                     shape.fill().foregroundColor(color)
                     shape.strokeBorder(lineWidth: DrawingConstants.lineWidth).foregroundColor(DrawingConstants.matchColor)
                 }
-            }  else  {
+            } else {
                 shape.fill()
             }
             content.opacity(rotation < 90 ? 1 : 0)
@@ -42,7 +41,7 @@ struct Cardify: AnimatableModifier {
         .rotation3DEffect(Angle(degrees: rotation), axis: (0, 1, 0))
     }
     
-    private struct DrawingConstants {
+    private enum DrawingConstants {
         static let cornerRadius: CGFloat = 17
         static let lineWidth: CGFloat = 3
         static let matchColor: Color = .blue
@@ -50,7 +49,7 @@ struct Cardify: AnimatableModifier {
 }
 
 extension View {
-    func cardify(color: Color, isFaceUp: Bool, isMatch: Bool) -> some View{
-        self.modifier(Cardify(Color: color, isFaceUp: isFaceUp, IsMatch: isMatch))
+    func cardify(color: Color, isFaceUp: Bool, isMatch: Bool) -> some View {
+        modifier(Cardify(Color: color, isFaceUp: isFaceUp, IsMatch: isMatch))
     }
 }
